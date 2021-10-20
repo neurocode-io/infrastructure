@@ -10,7 +10,7 @@ const egressIp = new azure.network.PublicIPAddress(`${prefix}-aks-egress`, {
   resourceGroupName: aksVnetResourceGroup.name,
   publicIPAllocationMethod: 'Static',
   sku: {
-    tier: 'Standard',
+    name: 'Standard',
   },
   tags,
 })
@@ -33,10 +33,10 @@ const cluster = new azure.containerservice.ManagedCluster(`${prefix}-aks`, {
   },
   networkProfile: {
     networkPlugin: 'azure',
-    networkPolicy: 'calico',
+    networkPolicy: 'azure', // calico ?
     loadBalancerSku: 'standard',
     loadBalancerProfile: {
-      effectiveOutboundIPs: [egressIp],
+      effectiveOutboundIPs: [{ id: egressIp.id }],
     },
   },
   podIdentityProfile: {
