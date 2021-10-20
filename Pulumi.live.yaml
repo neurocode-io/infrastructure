@@ -1,0 +1,15 @@
+config:
+  azure-native:location: northeurope
+  neurocode-base:deployLocation: northeurope
+  neurocode-base:aks:
+    version: '1.21.2'
+    adminGroupIds: ['3d4e2493-7a50-4f78-b638-ce2f34629f9c']
+    controlPlane:
+      vmSize: B2s
+      zones: ['1']
+    dataPlane:
+      spot:
+        vmSize: D2as_v4
+        minCount: 1
+        maxCount: 3
+        zones: ['1', '2', '3']

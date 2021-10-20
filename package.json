@@ -1,0 +1,13 @@
+{
+    "name": "neurocode-base",
+    "devDependencies": {
+        "@types/node": "^14",
+        "typescript": "4.4.4"
+    },
+    "dependencies": {
+        "@pulumi/azure-native": "^1.0.0",
+        "@pulumi/azuread": "5.6.0",
+        "@pulumi/pulumi": "^3.0.0",
+        "zod": "3.10.3"
+    }
+}
