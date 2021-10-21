@@ -9,14 +9,17 @@ export const aksResourceGroup = new azure.resources.ResourceGroup(
   },
 )
 
-const egressIp = new azure.network.PublicIPAddress(`${prefix}-aks-egress`, {
-  resourceGroupName: aksVnetResourceGroup.name,
-  publicIPAllocationMethod: 'Static',
-  sku: {
-    name: 'Standard',
+export const egressIp = new azure.network.PublicIPAddress(
+  `${prefix}-aks-egress`,
+  {
+    resourceGroupName: aksVnetResourceGroup.name,
+    publicIPAllocationMethod: 'Static',
+    sku: {
+      name: 'Standard',
+    },
+    tags,
   },
-  tags,
-})
+)
 
 export const cluster = new azure.containerservice.ManagedCluster(
   `${prefix}-aks`,

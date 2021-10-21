@@ -1,6 +1,6 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as containerservice from '@pulumi/azure-native/containerservice'
-import { aksResourceGroup, cluster } from './src/aks'
+import { aksResourceGroup, cluster, egressIp } from './src/aks'
 
 const creds = pulumi
   .all([cluster.name, aksResourceGroup.name])
@@ -15,3 +15,5 @@ const encoded = creds.kubeconfigs[0].value
 export const kubeConfig = encoded.apply((enc) =>
   Buffer.from(enc, 'base64').toString(),
 )
+
+export const externalIp = egressIp.ipAddress
