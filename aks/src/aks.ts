@@ -14,8 +14,17 @@ export const aksResourceGroup = new azure.resources.ResourceGroup(
   },
 )
 
-export const createCluster = (opts: ClusterOpts) =>
-  new azure.containerservice.ManagedCluster(`${prefix}-aks`, {
+export const createCluster = (opts: ClusterOpts) => {
+  opts.subnet.addressPrefix.apply((cidr) => {
+    if (!cidr) throw new Error('Cidr needed')
+
+    const range = cidr.split('/').shift()
+    if (!range) throw new Error('Wrong cidr')
+    if (['172.29.0.0', '10.243.0.0', '10.244.0.0'].includes(range))
+      throw new Error('Cidr unusable')
+  })
+
+  return new azure.containerservice.ManagedCluster(`${prefix}-aks`, {
     resourceGroupName: aksResourceGroup.name,
     location,
     autoUpgradeProfile: {
@@ -35,8 +44,9 @@ export const createCluster = (opts: ClusterOpts) =>
       networkPlugin: 'azure',
       networkPolicy: 'azure', // calico ?
       loadBalancerSku: 'standard',
-      //@ts-expect-error
-      serviceCidr: opts.subnet.addressPrefix,
+      serviceCidr: '172.29.0.0/16',
+      podCidr: '10.244.0.0/16',
+      dockerBridgeCidr: '10.243.0.0/16',
       loadBalancerProfile: {
         outboundIPs: {
           publicIPs: [{ id: opts.egressIp.id }],
@@ -77,6 +87,7 @@ export const createCluster = (opts: ClusterOpts) =>
     nodeResourceGroup: `${prefix}-aks-nodes`,
     tags,
   })
+}
 
 // const appSpotPool = new azure.containerservice.AgentPool(
 //   `${prefix}-aks-apps-pool`,

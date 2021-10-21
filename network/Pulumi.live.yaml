@@ -1,5 +1,5 @@
 config:
   azure-native:location: northeurope
   network:deployLocation: northeurope
-  network:vnetCidrs: ['10.1.0.0/18']
-  network:subnetCidrs: [{aks: '10.1.0.0/20'}]
+  network:vnetCidrs: ['172.16.0.0/16']
+  network:subnetCidrs: [{aks: '172.16.0.0/20'}]
