@@ -1,6 +1,11 @@
 import * as azure from '@pulumi/azure-native'
+import * as pulumi from '@pulumi/pulumi'
 import { AKS, prefix, location, tags } from '../config'
-import { askSubnet1, aksVnetResourceGroup } from './vnet'
+
+type ClusterOpts = {
+  egressIp: pulumi.Output<azure.network.PublicIPAddress>
+  subnet: pulumi.Output<azure.network.Subnet>
+}
 
 export const aksResourceGroup = new azure.resources.ResourceGroup(
   `${prefix}-rg-aks`,
@@ -9,21 +14,8 @@ export const aksResourceGroup = new azure.resources.ResourceGroup(
   },
 )
 
-export const egressIp = new azure.network.PublicIPAddress(
-  `${prefix}-aks-egress`,
-  {
-    resourceGroupName: aksVnetResourceGroup.name,
-    publicIPAllocationMethod: 'Static',
-    sku: {
-      name: 'Standard',
-    },
-    tags,
-  },
-)
-
-export const cluster = new azure.containerservice.ManagedCluster(
-  `${prefix}-aks`,
-  {
+export const createCluster = (opts: ClusterOpts) =>
+  new azure.containerservice.ManagedCluster(`${prefix}-aks`, {
     resourceGroupName: aksResourceGroup.name,
     location,
     autoUpgradeProfile: {
@@ -43,8 +35,12 @@ export const cluster = new azure.containerservice.ManagedCluster(
       networkPlugin: 'azure',
       networkPolicy: 'azure', // calico ?
       loadBalancerSku: 'standard',
+      //@ts-expect-error
+      serviceCidr: opts.subnet.addressPrefix,
       loadBalancerProfile: {
-        outboundIPs: { publicIPs: [{ id: egressIp.id }] },
+        outboundIPs: {
+          publicIPs: [{ id: opts.egressIp.id }],
+        },
       },
     },
     podIdentityProfile: {
@@ -62,7 +58,7 @@ export const cluster = new azure.containerservice.ManagedCluster(
         maxPods: 30,
         mode: 'System',
         name: 'agentpool',
-        vnetSubnetID: askSubnet1.id,
+        vnetSubnetID: opts.subnet.id,
         osDiskSizeGB: 0,
         osType: 'Linux',
         type: 'VirtualMachineScaleSets',
@@ -80,8 +76,7 @@ export const cluster = new azure.containerservice.ManagedCluster(
     kubernetesVersion: AKS.version,
     nodeResourceGroup: `${prefix}-aks-nodes`,
     tags,
-  },
-)
+  })
 
 // const appSpotPool = new azure.containerservice.AgentPool(
 //   `${prefix}-aks-apps-pool`,

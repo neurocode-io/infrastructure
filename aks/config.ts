@@ -1,4 +1,4 @@
-import * as pulmui from '@pulumi/pulumi'
+import * as pulumui from '@pulumi/pulumi'
 import { z } from 'zod'
 
 const AksConfigSchema = z.object({
@@ -18,7 +18,7 @@ const AksConfigSchema = z.object({
   ),
 })
 
-const config = new pulmui.Config()
+const config = new pulumui.Config()
 
 const lo = {
   northeurope: 'ne',
@@ -26,7 +26,7 @@ const lo = {
   francecentral: 'fc',
 }
 
-const env = pulmui.getStack()
+const env = pulumui.getStack()
 
 //@ts-ignore
 const shortLocation = lo[config.require('deployLocation')]
@@ -35,7 +35,7 @@ if (!shortLocation) throw new Error('ConfigError: Unknown location provided')
 export const location = config.require('deployLocation')
 export const prefix = `${shortLocation}-${env}`
 
-export const AKS = AksConfigSchema.parse(config.requireObject('aks'))
+export const AKS = AksConfigSchema.parse(config.requireObject('config'))
 
 export const tags = {
   managedBy: 'pulumi',

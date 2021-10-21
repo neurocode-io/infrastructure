@@ -1,5 +1,5 @@
 {
-  "name": "neurocode-base",
+  "name": "aks",
   "scripts": {
     "start": "pulumi up --suppress-outputs",
     "upgrade": "npx npm-check-updates -u"

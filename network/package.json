@@ -1,5 +1,5 @@
 {
-  "name": "k8s",
+  "name": "network",
   "scripts": {
     "start": "pulumi up --suppress-outputs",
     "upgrade": "npx npm-check-updates -u"
@@ -9,8 +9,7 @@
     "typescript": "4.4.4"
   },
   "dependencies": {
-    "@pulumi/pulumi": "^3.15.0",
-    "@pulumi/kubernetes": "^3.8.2",
-    "@pulumi/kubernetesx": "^0.1.6"
+    "@pulumi/azure-native": "^1.41.0",
+    "@pulumi/pulumi": "^3.15.0"
   }
 }
