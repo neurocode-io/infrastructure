@@ -45,8 +45,9 @@ export const createCluster = (opts: ClusterOpts) => {
       networkPolicy: 'azure', // calico ?
       loadBalancerSku: 'standard',
       serviceCidr: '172.29.0.0/16',
+      dnsServiceIP: '172.29.0.10',
       podCidr: '10.244.0.0/16',
-      dockerBridgeCidr: '10.243.0.0/16',
+      dockerBridgeCidr: '10.243.0.1/16',
       loadBalancerProfile: {
         outboundIPs: {
           publicIPs: [{ id: opts.egressIp.id }],
