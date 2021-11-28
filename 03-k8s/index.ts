@@ -4,7 +4,7 @@ import { createNginx } from './src/ingress-controller'
 
 const chartVersion = '4.0.6'
 const env = pulumi.getStack()
-const infra = new pulumi.StackReference(`neurocode/neurocode-base-k8s/${env}`)
+const infra = new pulumi.StackReference(`neurocode/aks/${env}`)
 
 const provider = new k8s.Provider('k8s', {
   kubeconfig: infra.getOutput('kubeConfig'),

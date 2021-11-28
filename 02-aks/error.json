@@ -1,0 +1,6 @@
+{
+  "error": {
+    "code": "LinkedAuthorizationFailed",
+    "message": "The client 'cb68a4f2-9cd8-4c8c-a045-09e7fe0c260d' with object id 'cb68a4f2-9cd8-4c8c-a045-09e7fe0c260d' has permission to perform action 'Microsoft.Network /loadBalancers/write' on scope '/subscriptions/e9a0397c-9b68-49ea-ae88-dcbd2f08e73e/resourceGroups/ne-live-aks-nodes/providers/Microsoft.Network/loadBalancers/kubernetes'; however, it does not have permission to perform action 'Microsoft. Network/publicIPAddresses/join/action' on the linked scope(s) '/subscriptions/e9a0397c-9b68-49ea-ae88-dcbd2f08e73e/resourceGroups/ne-live-rg-aksvnet1d4a218c/providers/Microsoft.Network/publicIPAddresses/ne-live-aks-egress6d8c78f0' or the  linked scope(s) are invalid."
+  }
+}

@@ -3,7 +3,7 @@ import * as pulumi from '@pulumi/pulumi'
 
 type NginxOpts = {
   version: string
-  provider: any
+  provider: k8s.Provider
   loadBalancerIP?: pulumi.Output<string>
 }
 const namespace = new k8s.core.v1.Namespace('ingress', {
