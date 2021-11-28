@@ -7,6 +7,8 @@ type ClusterOpts = {
   subnet: pulumi.Output<azure.network.Subnet>
 }
 
+const isSpotPool = Object.keys(AKS.dataPlane).includes('spot')
+
 export const aksResourceGroup = new azure.resources.ResourceGroup(
   `${prefix}-rg-aks`,
   {
@@ -27,9 +29,7 @@ export const createCluster = (opts: ClusterOpts) => {
   return new azure.containerservice.ManagedCluster(`${prefix}-aks`, {
     resourceGroupName: aksResourceGroup.name,
     location,
-    autoUpgradeProfile: {
-      upgradeChannel: 'rapid',
-    },
+    autoUpgradeProfile: isSpotPool ? undefined : { upgradeChannel: 'rapid' },
     aadProfile: {
       adminGroupObjectIDs: AKS.adminGroupIds,
       enableAzureRBAC: true,
@@ -90,35 +90,37 @@ export const createCluster = (opts: ClusterOpts) => {
   })
 }
 
-// const appSpotPool = new azure.containerservice.AgentPool(
-//   `${prefix}-aks-apps-pool`,
-//   {
-//     mode: 'User',
-//     scaleSetEvictionPolicy: 'delete',
-//     scaleSetPriority: 'spot',
-//     spotMaxPrice: -1,
-//     enableAutoScaling: true,
-//     type: 'VirtualMachineScaleSets',
-//     agentPoolName: 'apps',
-//     kubeletConfig: {
-//       containerLogMaxFiles: 50,
-//       containerLogMaxSizeMB: 10,
-//     },
-//     linuxOSConfig: {},
-//     count: AKS.dataPlane.spot.minCount,
-//     minCount: AKS.dataPlane.spot.minCount,
-//     maxCount: AKS.dataPlane.spot.maxCount,
-//     maxPods: 110,
-//     availabilityZones: AKS.dataPlane.spot.zones,
-//     resourceGroupName: aksResourceGroup.name,
-//     resourceName: cluster.name,
-//     osDiskSizeGB: 0,
-//     osType: 'Linux',
-//     vmSize: AKS.dataPlane.spot.vmSize,
-//     vnetSubnetID: askSubnet1.id,
-//     nodeLabels: {
-//       target: 'apps',
-//     },
-//     tags,
-//   },
-// )
+export const createSpotPool = (
+  cluster: azure.containerservice.ManagedCluster,
+) => {
+  if (!isSpotPool) return
+
+  return new azure.containerservice.AgentPool(`${prefix}-aks-spot-pool`, {
+    mode: 'User',
+    scaleSetEvictionPolicy: 'delete',
+    scaleSetPriority: 'spot',
+    spotMaxPrice: -1,
+    enableAutoScaling: true,
+    type: 'VirtualMachineScaleSets',
+    agentPoolName: 'spot',
+    kubeletConfig: {
+      containerLogMaxFiles: 50,
+      containerLogMaxSizeMB: 10,
+    },
+    linuxOSConfig: {},
+    count: AKS.dataPlane.spot.minCount,
+    minCount: AKS.dataPlane.spot.minCount,
+    maxCount: AKS.dataPlane.spot.maxCount,
+    maxPods: 110,
+    availabilityZones: AKS.dataPlane.spot.zones,
+    resourceGroupName: aksResourceGroup.name,
+    resourceName: cluster.name,
+    osDiskSizeGB: 0,
+    osType: 'Linux',
+    vmSize: AKS.dataPlane.spot.vmSize,
+    nodeLabels: {
+      target: 'spot',
+    },
+    tags,
+  })
+}

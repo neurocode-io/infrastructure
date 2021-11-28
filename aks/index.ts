@@ -1,6 +1,6 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as azure from '@pulumi/azure-native'
-import { aksResourceGroup, createCluster } from './src/aks'
+import { aksResourceGroup, createCluster, createSpotPool } from './src/aks'
 
 const env = pulumi.getStack()
 const infra = new pulumi.StackReference(`neurocode/network/${env}`)
@@ -15,6 +15,8 @@ const cluster = createCluster({
   egressIp: publicIp,
   subnet,
 })
+
+createSpotPool(cluster)
 
 const creds = pulumi
   .all([cluster.name, aksResourceGroup.name])
