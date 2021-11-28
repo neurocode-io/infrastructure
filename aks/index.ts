@@ -26,6 +26,11 @@ const creds = pulumi
   })
 
 const encoded = creds.kubeconfigs[0].value
+
 export const kubeConfig = encoded.apply((enc) =>
   Buffer.from(enc, 'base64').toString(),
+)
+
+export const principalId = cluster.identity.apply(
+  (identity) => identity?.principalId,
 )
