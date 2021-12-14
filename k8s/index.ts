@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi'
 import { createNamespace, createNginx } from './src/ingress-controller'
 
-const chartVersion = '4.0.6'
+const chartVersion = '4.0.13'
 const env = pulumi.getStack()
 const infra = new pulumi.StackReference(`neurocode/network/${env}`)
 
