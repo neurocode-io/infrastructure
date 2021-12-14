@@ -23,5 +23,4 @@ export const principalId = cluster.identity.apply(
 )
 
 export const getAksCreds = pulumi.interpolate`az aks get-credentials --resource-group ${aksResourceGroup.name}  --name ${cluster.name}`
-
-// az aks get-versions --location northeurope
+export const aksUpdateCheck = pulumi.interpolate`az aks get-upgrades --resource-group ${aksResourceGroup.name}  --name ${cluster.name}`
