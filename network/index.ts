@@ -39,3 +39,6 @@ export const egressIp = new azure.network.PublicIPAddress(
     tags,
   },
 )
+
+export const vnetRgName = aksVnetResourceGroup.name
+export const publicIp = egressIp.ipAddress

@@ -18,21 +18,10 @@ const cluster = createCluster({
 
 createSpotPool(cluster)
 
-const creds = pulumi
-  .all([cluster.name, aksResourceGroup.name])
-  .apply(([clusterName, rgName]) => {
-    return azure.containerservice.listManagedClusterUserCredentials({
-      resourceGroupName: rgName,
-      resourceName: clusterName,
-    })
-  })
-
-const encoded = creds.kubeconfigs[0].value
-
-export const kubeConfig = encoded.apply((enc) =>
-  Buffer.from(enc, 'base64').toString(),
-)
-
 export const principalId = cluster.identity.apply(
   (identity) => identity?.principalId,
 )
+
+export const getAksCreds = pulumi.interpolate`az aks get-credentials --resource-group ${aksResourceGroup.name}  --name ${cluster.name}`
+
+// az aks get-versions --location northeurope
