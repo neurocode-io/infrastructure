@@ -1,4 +1,4 @@
-name: CI
+name: aks-check
 
 on:
   push:
@@ -12,10 +12,9 @@ jobs:
   check-aks-version:
     runs-on: ubuntu-latest
     steps:
-      - uses: Azure/login@v1
-      - name: Azure Login
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - uses: Azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - run: |
-          az webapp list --query "[?state=='Running']"
+    - run: |
+        az webapp list --query "[?state=='Running']"
