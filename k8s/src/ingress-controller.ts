@@ -29,7 +29,7 @@ export const createNginx = (opts: NginxOpts) => {
         },
         service: {
           loadBalancerIP: opts.loadBalancerIP,
-          externalTrafficPolicy: 'Local',
+          externalTrafficPolicy: 'Local', // client source IP preservation
           annotations: {
             'service.beta.kubernetes.io/azure-load-balancer-mixed-protocols': true,
             'service.beta.kubernetes.io/azure-load-balancer-resource-group': `${opts.ipResourceGroup}`,
